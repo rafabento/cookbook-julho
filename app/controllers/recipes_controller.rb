@@ -13,27 +13,30 @@ class RecipesController < ApplicationController
   end
 
   def create
-    @recipe_types = RecipeType.all
     @recipe = Recipe.new(recipe_params)
-    
-    if @recipe.save!
+
+    if @recipe.save
       redirect_to @recipe
     else
-      flash[:alert] = "Você deve informar todos os dados da receita"
+      flash[:alert] = 'Não foi possível salvar a receita'
+      @recipe_types = RecipeType.all
       render :new
     end
   end
 
   def edit
+    @recipe_types = RecipeType.all
     @recipe = Recipe.find(params[:id])
   end
 
   def update
     @recipe = Recipe.find(params[:id])
+
     if @recipe.update(recipe_params)
       redirect_to @recipe
     else
-      flash[:alert] = "Você deve informar todos os dados da receita"
+      flash[:alert] = 'Não foi possível salvar a receita'
+      @recipe_types = RecipeType.all
       render :edit
     end
   end
@@ -41,7 +44,7 @@ class RecipesController < ApplicationController
   private
 
   def recipe_params
-    params.require(:recipe).permit(:title, :cuisine, :difficulty, :cook_time, 
-      :ingredients, :cook_method, :recipe_type)
+    params.require(:recipe).permit(:title, :recipe_type_id, :cuisine,
+      :difficulty, :cook_time, :ingredients, :cook_method, :recipe_type)
   end
 end
